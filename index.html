@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cross Village Almanac</title>
+    <title>Cross Village Conditions Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.5); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 9999px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1ebd9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
         
-        /* FIXED: Universal CSS Fullscreen Overrides that work across iOS and Android natively */
+        /* Universal CSS Fullscreen Overrides configured for the light beach layout */
         .pseudo-fullscreen {
             position: fixed !important;
             top: 0 !important;
@@ -20,7 +20,7 @@
             width: 100vw !important;
             height: 100vh !important;
             z-index: 9999 !important;
-            background-color: #0f172a !important; /* Force Slate-900 theme */
+            background-color: #f7f4f0 !important; /* Soft sand-white baseline */
             padding: 1.5rem !important;
             border-radius: 0 !important;
             display: flex !important;
@@ -34,15 +34,15 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+<body class="bg-[#f7f4f0] text-slate-800 font-sans min-h-screen">
 
-    <header class="bg-slate-800 border-b border-slate-700 p-6 sticky top-0 z-50 shadow-md">
+    <header class="bg-[#1a365d] border-b border-[#2b4c7e] p-6 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-sky-400">Cross Village Almanac</h1>
-                <p class="text-sm text-slate-400">What you want to know about XVLG</p>
+                <h1 class="text-2xl font-bold text-[#f3e9dc]">XVLG Conditions Hub</h1>
+                <p class="text-sm text-[#b9d6f2]">What you want to know about XVLG</p>
             </div>
-            <div id="live-clock" class="text-sm font-mono text-slate-300 bg-slate-900 px-4 py-2 rounded border border-slate-700">
+            <div id="live-clock" class="text-sm font-mono text-[#f3e9dc] bg-[#112244] px-4 py-2 rounded border border-[#2b4c7e]">
                 Synchronizing local clock...
             </div>
         </div>
@@ -52,145 +52,145 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg flex flex-col justify-between space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                    <h2 class="text-lg font-semibold text-sky-400 flex items-center gap-2">
+            <div class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm flex flex-col justify-between space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-semibold text-[#1a365d] flex items-center gap-2">
                         <span>⚓</span> XVLG Now
                     </h2>
-                    <span class="text-xs bg-emerald-500/20 text-emerald-400 font-mono px-2 py-1 rounded border border-emerald-500/30">LIVE OBSERVATION</span>
+                    <span class="text-xs bg-emerald-50 text-emerald-700 font-mono px-2 py-1 rounded border border-emerald-200">LIVE OBSERVATION</span>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3 flex-grow">
-                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 flex flex-col justify-center">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider font-medium">Water Temp</span>
-                        <span id="curr-water-temp" class="text-2xl font-bold text-slate-100 mt-1">--°F</span>
+                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Water Temp</span>
+                        <span id="curr-water-temp" class="text-2xl font-bold text-sky-700 mt-1">--°F</span>
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 flex flex-col justify-center">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider font-medium">Air Temp</span>
-                        <span id="curr-air-temp" class="text-2xl font-bold text-slate-100 mt-1">--°F</span>
+                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Air Temp</span>
+                        <span id="curr-air-temp" class="text-2xl font-bold text-[#8c6d53] mt-1">--°F</span>
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 flex flex-col justify-center">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider font-medium">Wind Vector</span>
-                        <span id="curr-wind" class="text-xl font-bold text-slate-100 mt-1 truncate block">--</span>
+                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Wind Vector</span>
+                        <span id="curr-wind" class="text-xl font-bold text-slate-700 mt-1 truncate block">--</span>
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 flex flex-col justify-center">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider font-medium">Est. Waves</span>
-                        <span id="curr-waves" class="text-xl font-bold text-teal-400 mt-1 truncate block">--</span>
+                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Est. Waves</span>
+                        <span id="curr-waves" class="text-xl font-bold text-teal-600 mt-1 truncate block">--</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div id="curr-sailing-box" class="p-3 rounded-lg border text-slate-400 flex justify-between items-center transition-colors duration-300">
+                    <div id="curr-sailing-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
-                            <span class="text-xs uppercase tracking-wider block font-semibold">Sailing Outlook (15')</span>
-                            <span id="curr-sailing-text" class="text-[11px] block text-slate-400">Calculating...</span>
+                            <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Sailing Outlook (15')</span>
+                            <span id="curr-sailing-text" class="text-[11px] block text-slate-500">Calculating...</span>
                         </div>
                         <span id="curr-sailing-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
-                    <div id="curr-beach-box" class="p-3 rounded-lg border text-slate-400 flex justify-between items-center transition-colors duration-300">
+                    <div id="curr-beach-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
-                            <span class="text-xs uppercase tracking-wider block font-semibold">Beach Outlook</span>
-                            <span id="curr-beach-text" class="text-[11px] block text-slate-400">Calculating...</span>
+                            <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Beach Outlook</span>
+                            <span id="curr-beach-text" class="text-[11px] block text-slate-500">Calculating...</span>
                         </div>
                         <span id="curr-beach-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
                 </div>
 
-                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                    <span class="text-xs text-slate-400 block uppercase tracking-wider mb-1">Overhead Sky Status</span>
-                    <div id="curr-weather-text" class="text-xs text-sky-300 max-h-16 overflow-y-auto whitespace-normal break-words custom-scrollbar pr-1">
+                <div class="bg-[#f8f6f2] p-3 rounded-lg border border-[#ede9e2]">
+                    <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold mb-1">Weather Status</span>
+                    <div id="curr-weather-text" class="text-xs text-sky-800 max-h-16 overflow-y-auto whitespace-normal break-words custom-scrollbar pr-1">
                         Fetching latest grid observations...
                     </div>
                 </div>
             </div>
 
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg flex flex-col justify-between space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                    <h2 class="text-lg font-semibold text-amber-400 flex items-center gap-2">
+            <div class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm flex flex-col justify-between space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-semibold text-[#8c6d53] flex items-center gap-2">
                         <span>🔮</span> Tomorrow's Outlook
                     </h2>
-                    <span class="text-xs bg-amber-500/20 text-amber-400 font-mono px-2 py-1 rounded border border-amber-500/30">NWS SIMULATION</span>
+                    <span class="text-xs bg-amber-50 text-amber-800 font-mono px-2 py-1 rounded border border-amber-200">NWS SIMULATION</span>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider">Air Temp (Max)</span>
-                        <span id="tomorrow-temp" class="text-xl font-bold text-slate-100">--°F</span>
+                    <div class="bg-[#fcfbf9] p-3 rounded-lg border border-[#ede9e2] shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Air Temp (Max)</span>
+                        <span id="tomorrow-temp" class="text-xl font-bold text-[#8c6d53] mt-1 block">--°F</span>
                     </div>
-                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider">Expected Waves</span>
-                        <span id="tomorrow-waves" class="text-lg font-bold text-teal-400 truncate block">--</span>
+                    <div class="bg-[#fcfbf9] p-3 rounded-lg border border-[#ede9e2] shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Expected Waves</span>
+                        <span id="tomorrow-waves" class="text-lg font-bold text-teal-600 truncate block mt-1">--</span>
                     </div>
-                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                        <span class="text-xs text-slate-400 block uppercase tracking-wider">Predicted Wind</span>
-                        <span id="tomorrow-wind" class="text-sm font-semibold text-slate-200 block mt-1 truncate">--</span>
+                    <div class="bg-[#fcfbf9] p-3 rounded-lg border border-[#ede9e2] shadow-xs">
+                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Predicted Wind</span>
+                        <span id="tomorrow-wind" class="text-sm font-semibold text-slate-700 block mt-2 truncate">--</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div id="tomorrow-sailing-box" class="p-3 rounded-lg border text-slate-400 flex justify-between items-center transition-colors duration-300">
+                    <div id="tomorrow-sailing-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
-                            <span class="text-xs uppercase tracking-wider block font-semibold">Sailing Outlook (15')</span>
-                            <span id="tomorrow-sailing-text" class="text-[11px] block text-slate-400">Analyzing weather...</span>
+                            <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Sailing Outlook (15')</span>
+                            <span id="tomorrow-sailing-text" class="text-[11px] block text-slate-500">Analyzing weather...</span>
                         </div>
                         <span id="tomorrow-sailing-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
-                    <div id="tomorrow-beach-box" class="p-3 rounded-lg border text-slate-400 flex justify-between items-center transition-colors duration-300">
+                    <div id="tomorrow-beach-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
-                            <span class="text-xs uppercase tracking-wider block font-semibold">Beach Outlook</span>
+                            <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Beach Outlook</span>
                             <span id="tomorrow-beach-text" class="text-[11px] block text-slate-400">Analyzing weather...</span>
                         </div>
                         <span id="tomorrow-beach-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
                 </div>
 
-                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                    <span class="text-xs text-slate-400 block uppercase tracking-wider mb-1">Detailed Marine Outlook</span>
-                    <div id="tomorrow-forecast" class="text-xs text-slate-300 max-h-16 overflow-y-auto whitespace-normal break-words custom-scrollbar pr-1">
+                <div class="bg-[#f8f6f2] p-3 rounded-lg border border-[#ede9e2]">
+                    <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold mb-1">Weather Outlook</span>
+                    <div id="tomorrow-forecast" class="text-xs text-slate-600 max-h-16 overflow-y-auto whitespace-normal break-words custom-scrollbar pr-1">
                         Loading forecast parameters...
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="chart-card" class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg space-y-4">
-            <div class="border-b border-slate-700 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div id="chart-card" class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm space-y-4">
+            <div class="border-b border-slate-200 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-lg font-semibold text-teal-400">📊 Long-Term Water Level Comparison</h2>
-                    <p class="text-xs text-slate-400 mt-1">Pinch/Drag to zoom and explore trends. Use tools to reset or view full screen.</p>
+                    <h2 class="text-lg font-semibold text-sky-800">📊 Long-Term Water Level Comparison</h2>
+                    <p class="text-xs text-slate-500 mt-1">Pinch/Drag to zoom and explore trends. Use tools to reset or view full screen.</p>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3">
-                    <div class="inline-flex gap-1 bg-slate-900 p-1 rounded-md border border-slate-700 text-xs text-slate-400 font-medium">
-                        <button id="fullscreen-btn" onclick="toggleFullscreen()" class="px-2.5 py-1 hover:text-white rounded transition cursor-pointer flex items-center gap-1">📱 Fullscreen</button>
-                        <button onclick="resetChartZoom()" class="px-2.5 py-1 hover:text-white rounded transition cursor-pointer flex items-center gap-1">🔄 Reset Zoom</button>
+                    <div class="inline-flex gap-1 bg-[#faf9f6] p-1 rounded-md border border-slate-200 text-xs text-slate-500 font-medium">
+                        <button id="fullscreen-btn" onclick="toggleFullscreen()" class="px-2.5 py-1 hover:text-slate-800 hover:bg-[#ede9e2] rounded transition cursor-pointer flex items-center gap-1">📱 Fullscreen</button>
+                        <button onclick="resetChartZoom()" class="px-2.5 py-1 hover:text-slate-800 hover:bg-[#ede9e2] rounded transition cursor-pointer flex items-center gap-1">🔄 Reset Zoom</button>
                     </div>
-                    <div class="inline-flex rounded-md shadow-sm bg-slate-900 p-1 border border-slate-700">
-                        <button onclick="changeTimeframe(1)" id="btn-1" class="px-3 py-1 text-xs font-medium rounded text-slate-400 hover:text-white transition cursor-pointer">1 Year</button>
-                        <button onclick="changeTimeframe(5)" id="btn-5" class="px-3 py-1 text-xs font-medium rounded text-slate-400 hover:text-white transition cursor-pointer">5 Years</button>
-                        <button onclick="changeTimeframe(10)" id="btn-10" class="px-3 py-1 text-xs font-medium rounded text-slate-400 hover:text-white transition cursor-pointer">10 Years</button>
-                        <button onclick="changeTimeframe(30)" id="btn-30" class="px-3 py-1 text-xs font-medium rounded text-slate-400 hover:text-white transition cursor-pointer">30 Years</button>
+                    <div class="inline-flex rounded-md shadow-sm bg-[#faf9f6] p-1 border border-slate-200">
+                        <button onclick="changeTimeframe(1)" id="btn-1" class="px-3 py-1 text-xs font-medium rounded text-slate-500 hover:text-slate-800 transition cursor-pointer">1 Year</button>
+                        <button onclick="changeTimeframe(5)" id="btn-5" class="px-3 py-1 text-xs font-medium rounded text-slate-500 hover:text-slate-800 transition cursor-pointer">5 Years</button>
+                        <button onclick="changeTimeframe(10)" id="btn-10" class="px-3 py-1 text-xs font-medium rounded text-slate-500 hover:text-slate-800 transition cursor-pointer">10 Years</button>
+                        <button onclick="changeTimeframe(30)" id="btn-30" class="px-3 py-1 text-xs font-medium rounded text-slate-500 hover:text-slate-800 transition cursor-pointer">30 Years</button>
                     </div>
                 </div>
             </div>
-            <div class="w-full bg-slate-900 p-2 sm:p-4 rounded-lg border border-slate-700 chart-wrapper">
+            <div class="w-full bg-[#fbfbfa] p-2 sm:p-4 rounded-lg border border-[#ede9e2] chart-wrapper">
                 <canvas id="waterLevelChart" class="max-h-88 w-full"></canvas>
             </div>
         </div>
 
-        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg space-y-4">
-            <div class="border-b border-slate-700 pb-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm space-y-4">
+            <div class="border-b border-slate-200 pb-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-lg font-semibold text-indigo-400">🚢 Straits of Mackinac Live Transit Radar</h2>
-                    <p class="text-xs text-slate-400 mt-1">Real-time vessel tracking centered on the cottage location. Clicking targets opens profiles in a new tab.</p>
+                    <h2 class="text-lg font-semibold text-[#1a365d]">🚢 Straits of Mackinac Live Transit Radar</h2>
+                    <p class="text-xs text-slate-500 mt-1">Real-time vessel tracking centered on the cottage location. Clicking targets opens profiles safely in a new tab.</p>
                 </div>
-                <span class="text-xs font-mono bg-emerald-500/20 text-emerald-400 font-mono border border-emerald-500/40 px-3 py-1.5 rounded-md self-start">
+                <span class="text-xs font-mono bg-sky-50 text-sky-800 border border-sky-200 px-3 py-1.5 rounded-md self-start">
                     📡 Radar Active
                 </span>
             </div>
             
-            <div class="w-full overflow-hidden rounded-lg border border-slate-700 shadow-inner bg-slate-950">
-                <iframe name="vesselfinder" id="vesselfinder" width="100%" height="460" src="https://www.vesselfinder.com/aismap?zoom=11&lat=45.63914&lon=-85.05347&theme=dark&names=true&click_to_activate=false" frameborder="0" scrolling="no"></iframe>
+            <div class="w-full overflow-hidden rounded-lg border border-[#ede9e2] bg-[#fbfbfa]">
+                <iframe name="vesselfinder" id="vesselfinder" width="100%" height="460" src="https://www.vesselfinder.com/aismap?zoom=11&lat=45.63914&lon=-85.05347&theme=light&names=true&click_to_activate=false" frameborder="0" scrolling="no"></iframe>
             </div>
         </div>
     </main>
@@ -207,7 +207,6 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // FIXED RE-ENGINEERED: Universally compliant toggle script bypassing native hardware blocks
         function toggleFullscreen() {
             const container = document.getElementById('chart-card');
             const btn = document.getElementById('fullscreen-btn');
@@ -220,10 +219,7 @@
                 btn.innerHTML = "📱 Fullscreen";
             }
             
-            // Force Chart.js engine to instantly redraw and map coordinates to the new window aspect ratios
-            if (activeChartInstance) {
-                activeChartInstance.resize();
-            }
+            if (activeChartInstance) activeChartInstance.resize();
         }
 
         function resetChartZoom() {
@@ -238,7 +234,7 @@
         }
 
         function cleanNumericWaves(waveStr) {
-            if (!waveStr) return 0; // Fixed: Parameter mapping verification corrected
+            if (!waveStr) return 0; 
             const matches = waveStr.match(/\d+/g);
             if (!matches) return 0;
             return Math.max(...matches.map(Number));
@@ -326,24 +322,25 @@
             return Math.max(1, Math.min(10, rating));
         }
 
+        // RE-STYLED: Changed stoplight color states to fit the sandy layout while keeping semantic green/yellow/red tones
         function assignStoplightStyle(elementBox, elementScore, scoreValue, descriptiveText) {
             let styleClasses = "";
             let ratingMessage = "";
 
             if (scoreValue >= 7) {
-                styleClasses = "bg-emerald-500/10 border-emerald-500/40 text-emerald-400";
+                styleClasses = "bg-emerald-50/70 border-emerald-200 text-emerald-800";
                 ratingMessage = scoreValue >= 9 ? "Excellent Conditions" : "Good Conditions";
             } else if (scoreValue >= 4) {
-                styleClasses = "bg-amber-500/10 border-amber-500/40 text-amber-400";
+                styleClasses = "bg-amber-50/70 border-amber-200 text-amber-800";
                 ratingMessage = scoreValue >= 5 ? "Sub-Optimal / Fair" : "Cautionary / Moderate";
             } else {
-                styleClasses = "bg-red-500/10 border-red-500/40 text-red-400";
+                styleClasses = "bg-red-50/70 border-red-200 text-red-800";
                 ratingMessage = "Poor / Hazardous";
             }
 
-            if(elementBox) elementBox.className = `p-3 rounded-lg border text-slate-400 flex justify-between items-center transition-colors duration-300 ${styleClasses}`;
+            if(elementBox) elementBox.className = `p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs ${styleClasses}`;
             if(elementScore) {
-                elementScore.className = `text-2xl font-black px-2.5 py-1 rounded ${scoreValue >= 7 ? 'bg-emerald-500/20' : scoreValue >= 4 ? 'bg-amber-500/20' : 'bg-red-500/20'}`;
+                elementScore.className = `text-2xl font-black px-2.5 py-1 rounded ${scoreValue >= 7 ? 'bg-emerald-100' : scoreValue >= 4 ? 'bg-amber-100' : 'bg-red-100'}`;
                 elementScore.innerText = scoreValue;
             }
             if(descriptiveText) descriptiveText.innerText = ratingMessage; 
@@ -418,6 +415,7 @@
             return `${d.getFullYear()}0101`;
         }
 
+        // RE-STYLED: Transformed Chart configuration layout layers over to beach palette models
         async function loadHistoricalAnalytics(yearsSelected) {
             const currentTimestamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
             let chartLabels = [];
@@ -473,20 +471,20 @@
                 data: {
                     labels: chartLabels,
                     datasets: [
-                        { label: 'Observed Mean Level (ft)', data: chartValues, borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.05)', borderWidth: 1.5, pointRadius: 0, fill: true, tension: 0.1 },
-                        { label: 'Historic Max Record (582.81 ft - July 19, 2020)', data: extremeHighDataset, borderColor: '#ef4444', borderWidth: 1.2, borderDash: [4, 4], pointRadius: 0 },
-                        { label: 'Historic Min Record (575.14 ft - Jan 20, 2013)', data: extremeLowDataset, borderColor: '#f59e0b', borderWidth: 1.2, borderDash: [4, 4], pointRadius: 0 }
+                        { label: 'Observed Mean Level (ft)', data: chartValues, borderColor: '#0284c7', backgroundColor: 'rgba(14, 165, 233, 0.08)', borderWidth: 2, pointRadius: 0, fill: true, tension: 0.1 },
+                        { label: 'Historic Max Record (582.81 ft - July 19, 2020)', data: extremeHighDataset, borderColor: '#dc2626', borderWidth: 1.2, borderDash: [4, 4], pointRadius: 0 },
+                        { label: 'Historic Min Record (575.14 ft - Jan 20, 2013)', data: extremeLowDataset, borderColor: '#b45309', borderWidth: 1.2, borderDash: [4, 4], pointRadius: 0 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { min: 574.0, max: 584.0, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } }
+                        y: { min: 574.0, max: 584.0, grid: { color: '#e2e8f0' }, ticks: { color: '#475569' } },
+                        x: { grid: { display: false }, ticks: { color: '#475569', maxTicksLimit: 12 } }
                     },
                     plugins: { 
-                        legend: { labels: { color: '#f1f5f9' } },
+                        legend: { labels: { color: '#1e293b', font: { weight: 'bold', size: 11 } } },
                         zoom: {
                             pan: { enabled: true, mode: 'x', threshold: 10 },
                             zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
@@ -498,16 +496,16 @@
 
         function changeTimeframe(years) {
             [1, 5, 10, 30].forEach(y => {
-                document.getElementById(`btn-${y}`).className = "px-3 py-1 text-xs font-medium rounded text-slate-400 hover:text-white transition cursor-pointer";
+                document.getElementById(`btn-${y}`).className = "px-3 py-1 text-xs font-medium rounded text-slate-500 hover:text-slate-800 transition cursor-pointer";
             });
-            document.getElementById(`btn-${years}`).className = "px-3 py-1 text-xs font-medium rounded bg-teal-500/20 text-teal-400 border border-teal-500/30 font-semibold cursor-pointer";
+            document.getElementById(`btn-${years}`).className = "px-3 py-1 text-xs font-semibold rounded bg-[#ede9e2] text-slate-800 border border-[#cbd5e1] cursor-pointer";
             loadHistoricalAnalytics(years);
         }
 
         window.onload = function() {
             try { loadWeatherForecast(); } catch(e) {}
             try { loadCurrentWaterData(); } catch(e) {}
-            try { changeTimeframe(30); } catch(e) {}
+            changeTimeframe(30); 
         };
     </script>
 </body>
