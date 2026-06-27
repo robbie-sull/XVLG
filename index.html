@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cross Village Conditions Hub</title>
+    <title>Cross Village Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1ebd9; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
         
-        /* Universal CSS Fullscreen Overrides configured for the light beach layout */
+        /* Universal CSS Fullscreen Overrides configured for the dynamic diurnal layout */
         .pseudo-fullscreen {
             position: fixed !important;
             top: 0 !important;
@@ -20,7 +20,6 @@
             width: 100vw !important;
             height: 100vh !important;
             z-index: 9999 !important;
-            background-color: #f7f4f0 !important; /* Soft sand-white baseline */
             padding: 1.5rem !important;
             border-radius: 0 !important;
             display: flex !important;
@@ -32,14 +31,62 @@
             height: calc(100vh - 8rem) !important;
             max-height: none !important;
         }
+
+        .compass-needle {
+            transition: transform 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Ambient background breathing keyframes to make the skyline gradients ripple like gentle lake swells */
+        @keyframes ambientBreathe {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .diurnal-bg {
+            background-size: 200% 200%;
+            animation: ambientBreathe 15s ease-in-out infinite;
+            transition: background 3s ease-in-out;
+        }
+
+        /* --- SCORE POP & GLOW CSS PHYSICS --- */
+        @keyframes springPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            70% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes emeraldBreatheGlow {
+            0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0); }
+        }
+
+        @keyframes amberBreatheGlow {
+            0% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0.3); }
+            70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0); }
+        }
+
+        .score-pop {
+            animation: springPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .glow-emerald {
+            animation: emeraldBreatheGlow 2.5s infinite ease-in-out;
+        }
+
+        .glow-amber {
+            animation: amberBreatheGlow 2.5s infinite ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-[#f7f4f0] text-slate-800 font-sans min-h-screen">
+<body id="dynamic-body" class="diurnal-bg text-slate-800 font-sans min-h-screen">
 
     <header class="bg-[#1a365d] border-b border-[#2b4c7e] p-6 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-[#f3e9dc]">XVLG Conditions Hub</h1>
+                <h1 class="text-2xl font-bold text-[#f3e9dc]">Cross Village Hub</h1>
                 <p class="text-sm text-[#b9d6f2]">What you want to know about XVLG</p>
             </div>
             <div id="live-clock" class="text-sm font-mono text-[#f3e9dc] bg-[#112244] px-4 py-2 rounded border border-[#2b4c7e]">
@@ -52,42 +99,55 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            <div class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm flex flex-col justify-between space-y-4">
+            <div class="bg-white/95 backdrop-blur-md p-6 rounded-xl border border-[#e6e0da] shadow-sm flex flex-col justify-between space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-200 pb-3">
                     <h2 class="text-lg font-semibold text-[#1a365d] flex items-center gap-2">
-                        <span>⚓</span> XVLG Now
+                        <span>⚓</span> XVLG now
                     </h2>
                     <span class="text-xs bg-emerald-50 text-emerald-700 font-mono px-2 py-1 rounded border border-emerald-200">LIVE OBSERVATION</span>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3 flex-grow">
-                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+                    <div class="bg-[#fcfbf9]/60 p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
                         <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Water Temp</span>
                         <span id="curr-water-temp" class="text-2xl font-bold text-sky-700 mt-1">--°F</span>
                     </div>
-                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+                    <div class="bg-[#fcfbf9]/60 p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
                         <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Air Temp</span>
                         <span id="curr-air-temp" class="text-2xl font-bold text-[#8c6d53] mt-1">--°F</span>
                     </div>
-                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
-                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Wind Vector</span>
-                        <span id="curr-wind" class="text-xl font-bold text-slate-700 mt-1 truncate block">--</span>
+                    
+                    <div class="bg-[#fcfbf9]/60 p-4 rounded-lg border border-[#ede9e2] flex items-center justify-between shadow-xs">
+                        <div>
+                            <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Wind Vector</span>
+                            <span id="curr-wind" class="text-lg font-bold text-slate-700 mt-1 block">--</span>
+                        </div>
+                        <div class="relative w-12 h-12 rounded-full border border-[#ede9e2] bg-white/90 flex items-center justify-center shrink-0 shadow-inner">
+                            <span class="absolute top-0.5 text-[8px] font-bold text-slate-400">N</span>
+                            <span class="absolute bottom-0.5 text-[8px] font-bold text-slate-400">S</span>
+                            <span class="absolute left-1 text-[8px] font-bold text-slate-400">W</span>
+                            <span class="absolute right-1 text-[8px] font-bold text-slate-400">E</span>
+                            <div id="curr-wind-arrow" class="compass-needle w-0.5 h-8 bg-[#8c6d53] rounded-full relative" style="transform: rotate(0deg);">
+                                <div class="absolute top-0 -left-[0.5px] w-1 h-4 bg-[#0284c7] rounded-full"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-[#fcfbf9] p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
+
+                    <div class="bg-[#fcfbf9]/60 p-4 rounded-lg border border-[#ede9e2] flex flex-col justify-center shadow-xs">
                         <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Est. Waves</span>
                         <span id="curr-waves" class="text-xl font-bold text-teal-600 mt-1 truncate block">--</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div id="curr-sailing-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
+                    <div id="curr-sailing-box" class="p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
                             <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Sailing Outlook (15')</span>
                             <span id="curr-sailing-text" class="text-[11px] block text-slate-500">Calculating...</span>
                         </div>
                         <span id="curr-sailing-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
-                    <div id="curr-beach-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
+                    <div id="curr-beach-box" class="p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
                             <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Beach Outlook</span>
                             <span id="curr-beach-text" class="text-[11px] block text-slate-500">Calculating...</span>
@@ -96,56 +156,66 @@
                     </div>
                 </div>
 
-                <div class="bg-[#f8f6f2] p-3 rounded-lg border border-[#ede9e2]">
-                    <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold mb-1">Weather Status</span>
+                <div class="bg-[#f8f6f2]/80 p-3 rounded-lg border border-[#ede9e2]">
+                    <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold mb-1">Overhead Sky Status</span>
                     <div id="curr-weather-text" class="text-xs text-sky-800 max-h-16 overflow-y-auto whitespace-normal break-words custom-scrollbar pr-1">
                         Fetching latest grid observations...
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm flex flex-col justify-between space-y-4">
+            <div class="bg-white/95 backdrop-blur-md p-6 rounded-xl border border-[#e6e0da] shadow-sm flex flex-col justify-between space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-200 pb-3">
                     <h2 class="text-lg font-semibold text-[#8c6d53] flex items-center gap-2">
-                        <span>🔮</span> Tomorrow's Outlook
+                        <span>🔮</span> Tomorrow's Predictions
                     </h2>
                     <span class="text-xs bg-amber-50 text-amber-800 font-mono px-2 py-1 rounded border border-amber-200">NWS SIMULATION</span>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-[#fcfbf9] p-3 rounded-lg border border-[#ede9e2] shadow-xs">
+                    <div class="bg-[#fcfbf9]/60 p-3 rounded-lg border border-[#ede9e2] shadow-xs">
                         <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Air Temp (Max)</span>
                         <span id="tomorrow-temp" class="text-xl font-bold text-[#8c6d53] mt-1 block">--°F</span>
                     </div>
-                    <div class="bg-[#fcfbf9] p-3 rounded-lg border border-[#ede9e2] shadow-xs">
+                    <div class="bg-[#fcfbf9]/60 p-3 rounded-lg border border-[#ede9e2] shadow-xs">
                         <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Expected Waves</span>
-                        <span id="tomorrow-waves" class="text-lg font-bold text-teal-600 truncate block mt-1">--</span>
+                        <span id="tomorrow-waves" class="text-lg font-bold text-teal-400 truncate block mt-1">--</span>
                     </div>
-                    <div class="bg-[#fcfbf9] p-3 rounded-lg border border-[#ede9e2] shadow-xs">
-                        <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Predicted Wind</span>
-                        <span id="tomorrow-wind" class="text-sm font-semibold text-slate-700 block mt-2 truncate">--</span>
+                    
+                    <div class="bg-[#fcfbf9]/60 p-3 rounded-lg border border-[#ede9e2] flex items-center justify-between shadow-xs">
+                        <div>
+                            <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold">Predicted Wind</span>
+                            <span id="tomorrow-wind" class="text-sm font-semibold text-slate-700 block mt-2 truncate">--</span>
+                        </div>
+                        <div class="relative w-11 h-11 rounded-full border border-[#ede9e2] bg-white/90 flex items-center justify-center shrink-0 shadow-inner ml-1">
+                            <span class="absolute top-0.5 text-[7px] font-bold text-slate-400">N</span>
+                            <span class="absolute bottom-0.5 text-[7px] font-bold text-slate-400">S</span>
+                            <div id="tomorrow-wind-arrow" class="compass-needle w-0.5 h-7 bg-[#8c6d53] rounded-full relative" style="transform: rotate(0deg);">
+                                <div class="absolute top-0 -left-[0.5px] w-1 h-3.5 bg-[#0284c7] rounded-full"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div id="tomorrow-sailing-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
+                    <div id="tomorrow-sailing-box" class="p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
                             <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Sailing Outlook (15')</span>
                             <span id="tomorrow-sailing-text" class="text-[11px] block text-slate-500">Analyzing weather...</span>
                         </div>
                         <span id="tomorrow-sailing-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
-                    <div id="tomorrow-beach-box" class="p-3 rounded-lg border bg-[#faf9f6] border-slate-200 text-slate-500 flex justify-between items-center transition-colors duration-300 shadow-xs">
+                    <div id="tomorrow-beach-box" class="p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs">
                         <div>
                             <span class="text-xs uppercase tracking-wider block font-bold text-slate-600">Beach Outlook</span>
-                            <span id="tomorrow-beach-text" class="text-[11px] block text-slate-400">Analyzing weather...</span>
+                            <span id="tomorrow-beach-text" class="text-[11px] block text-slate-500">Analyzing weather...</span>
                         </div>
                         <span id="tomorrow-beach-score" class="text-2xl font-black px-2.5 py-1 rounded">--</span>
                     </div>
                 </div>
 
-                <div class="bg-[#f8f6f2] p-3 rounded-lg border border-[#ede9e2]">
-                    <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold mb-1">Weather Outlook</span>
+                <div class="bg-[#f8f6f2]/80 p-3 rounded-lg border border-[#ede9e2]">
+                    <span class="text-xs text-slate-500 block uppercase tracking-wider font-semibold mb-1">Detailed Marine Outlook</span>
                     <div id="tomorrow-forecast" class="text-xs text-slate-600 max-h-16 overflow-y-auto whitespace-normal break-words custom-scrollbar pr-1">
                         Loading forecast parameters...
                     </div>
@@ -153,10 +223,10 @@
             </div>
         </div>
 
-        <div id="chart-card" class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm space-y-4">
+        <div id="chart-card" class="bg-white/95 backdrop-blur-md p-6 rounded-xl border border-[#e6e0da] shadow-sm space-y-4">
             <div class="border-b border-slate-200 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-lg font-semibold text-sky-800">📊 Long-Term Water Level Comparison</h2>
+                    <h2 class="text-lg font-semibold text-sky-800">📊 Water Levels</h2>
                     <p class="text-xs text-slate-500 mt-1">Pinch/Drag to zoom and explore trends. Use tools to reset or view full screen.</p>
                 </div>
                 
@@ -173,15 +243,15 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full bg-[#fbfbfa] p-2 sm:p-4 rounded-lg border border-[#ede9e2] chart-wrapper">
+            <div class="w-full bg-[#fbfbfa]/70 p-2 sm:p-4 rounded-lg border border-[#ede9e2] chart-wrapper">
                 <canvas id="waterLevelChart" class="max-h-88 w-full"></canvas>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl border border-[#e6e0da] shadow-sm space-y-4">
+        <div class="bg-white/95 backdrop-blur-md p-6 rounded-xl border border-[#e6e0da] shadow-sm space-y-4">
             <div class="border-b border-slate-200 pb-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-lg font-semibold text-[#1a365d]">🚢 Straits of Mackinac Live Transit Radar</h2>
+                    <h2 class="text-lg font-semibold text-[#1a365d]">🚢 Nearby Boats Map</h2>
                     <p class="text-xs text-slate-500 mt-1">Real-time vessel tracking centered on the cottage location. Clicking targets opens profiles safely in a new tab.</p>
                 </div>
                 <span class="text-xs font-mono bg-sky-50 text-sky-800 border border-sky-200 px-3 py-1.5 rounded-md self-start">
@@ -190,7 +260,7 @@
             </div>
             
             <div class="w-full overflow-hidden rounded-lg border border-[#ede9e2] bg-[#fbfbfa]">
-                <iframe name="vesselfinder" id="vesselfinder" width="100%" height="460" src="https://www.vesselfinder.com/aismap?zoom=11&lat=45.63914&lon=-85.05347&theme=light&names=true&click_to_activate=false" frameborder="0" scrolling="no"></iframe>
+                <iframe name="vesselfinder" id="vesselfinder" width="100%" height="460" src="https://www.vesselfinder.com/aismap?zoom=10&lat=45.71000&lon=-85.00000&theme=light&names=true&click_to_activate=false" frameborder="0" scrolling="no"></iframe>
             </div>
         </div>
     </main>
@@ -202,8 +272,33 @@
 
         let activeChartInstance = null;
 
+        function updateDiurnalBackground() {
+            const currentHour = new Date().getHours();
+            const body = document.getElementById('dynamic-body');
+            let linearGradientStyle = "";
+
+            if (currentHour >= 6 && currentHour < 11) {
+                linearGradientStyle = "linear-gradient(135deg, #fdf6e2 0%, #f4ebd9 50%, #e2effd 100%)";
+            } else if (currentHour >= 11 && currentHour < 18) {
+                linearGradientStyle = "linear-gradient(135deg, #e0f2fe 0%, #f7f4f0 50%, #bae6fd 100%)";
+            } else if (currentHour >= 18 && currentHour < 22) {
+                linearGradientStyle = "linear-gradient(135deg, #ffedd5 0%, #fed7aa 40%, #cfe2fe 100%)";
+            } else {
+                linearGradientStyle = "linear-gradient(135deg, #1e293b 0%, #0f172a 60%, #1e3a8a 100%)";
+                body.classList.remove('text-slate-800');
+                body.classList.add('text-slate-200');
+                body.style.background = linearGradientStyle;
+                return;
+            }
+            
+            body.classList.remove('text-slate-200');
+            body.classList.add('text-slate-800');
+            body.style.background = linearGradientStyle;
+        }
+
         function updateClock() {
             document.getElementById('live-clock').innerText = new Date().toLocaleString();
+            updateDiurnalBackground(); 
         }
         setInterval(updateClock, 1000); updateClock();
 
@@ -224,6 +319,17 @@
 
         function resetChartZoom() {
             if (activeChartInstance) activeChartInstance.resetZoom();
+        }
+
+        function cardinalToDegrees(direction) {
+            if (!direction) return 0;
+            const mapping = {
+                'N': 0, 'NNE': 22.5, 'NE': 45, 'ENE': 67.5,
+                'E': 90, 'ESE': 112.5, 'SE': 135, 'SSE': 157.5,
+                'S': 180, 'SSW': 202.5, 'SW': 225, 'WSW': 247.5,
+                'W': 270, 'WNW': 292.5, 'NW': 315, 'NNW': 337.5
+            };
+            return mapping[direction.toUpperCase()] || 0;
         }
 
         function cleanNumericWind(windStr) {
@@ -322,25 +428,32 @@
             return Math.max(1, Math.min(10, rating));
         }
 
-        // RE-STYLED: Changed stoplight color states to fit the sandy layout while keeping semantic green/yellow/red tones
         function assignStoplightStyle(elementBox, elementScore, scoreValue, descriptiveText) {
             let styleClasses = "";
+            let glowAnimationClass = "";
             let ratingMessage = "";
 
             if (scoreValue >= 7) {
-                styleClasses = "bg-emerald-50/70 border-emerald-200 text-emerald-800";
+                styleClasses = "bg-emerald-55/70 border-emerald-200 text-emerald-800";
+                glowAnimationClass = "glow-emerald";
                 ratingMessage = scoreValue >= 9 ? "Excellent Conditions" : "Good Conditions";
             } else if (scoreValue >= 4) {
-                styleClasses = "bg-amber-50/70 border-amber-200 text-amber-800";
+                styleClasses = "bg-amber-55/70 border-amber-200 text-amber-800";
+                glowAnimationClass = "glow-amber";
                 ratingMessage = scoreValue >= 5 ? "Sub-Optimal / Fair" : "Cautionary / Moderate";
             } else {
-                styleClasses = "bg-red-50/70 border-red-200 text-red-800";
+                styleClasses = "bg-red-55/70 border-red-200 text-red-800";
                 ratingMessage = "Poor / Hazardous";
             }
 
-            if(elementBox) elementBox.className = `p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs ${styleClasses}`;
+            if(elementBox) {
+                elementBox.className = `p-3 rounded-lg border flex justify-between items-center transition-colors duration-300 shadow-xs ${styleClasses}`;
+            }
+            
             if(elementScore) {
-                elementScore.className = `text-2xl font-black px-2.5 py-1 rounded ${scoreValue >= 7 ? 'bg-emerald-100' : scoreValue >= 4 ? 'bg-amber-100' : 'bg-red-100'}`;
+                elementScore.className = "";
+                void elementScore.offsetWidth; 
+                elementScore.className = `text-2xl font-black px-2.5 py-1 rounded score-pop ${glowAnimationClass} ${scoreValue >= 7 ? 'bg-emerald-100' : scoreValue >= 4 ? 'bg-amber-100' : 'bg-red-100'}`;
                 elementScore.innerText = scoreValue;
             }
             if(descriptiveText) descriptiveText.innerText = ratingMessage; 
@@ -365,6 +478,9 @@
                     document.getElementById('curr-waves').innerText = waveStrToday;
                     document.getElementById('curr-air-temp').innerText = `${todayPeriod.temperature}°${todayPeriod.temperatureUnit}`;
 
+                    const curDegrees = cardinalToDegrees(todayPeriod.windDirection);
+                    document.getElementById('curr-wind-arrow').style.transform = `rotate(${curDegrees}deg)`;
+
                     const currentWindVal = cleanNumericWind(todayPeriod.windSpeed);
                     const currentWaveVal = cleanNumericWaves(waveStrToday);
                     
@@ -382,6 +498,9 @@
                         document.getElementById('tomorrow-temp').innerText = `${tomorrowPeriod.temperature}°${tomorrowPeriod.temperatureUnit}`;
                         document.getElementById('tomorrow-wind').innerText = `${tomorrowPeriod.windSpeed} ${tomorrowPeriod.windDirection}`;
                         document.getElementById('tomorrow-waves').innerText = waveStrTomorrow;
+
+                        const tomDegrees = cardinalToDegrees(tomorrowPeriod.windDirection);
+                        document.getElementById('tomorrow-wind-arrow').style.transform = `rotate(${tomDegrees}deg)`;
 
                         const tomWindVal = cleanNumericWind(tomorrowPeriod.windSpeed);
                         const tomWaveVal = cleanNumericWaves(waveStrTomorrow);
@@ -415,7 +534,6 @@
             return `${d.getFullYear()}0101`;
         }
 
-        // RE-STYLED: Transformed Chart configuration layout layers over to beach palette models
         async function loadHistoricalAnalytics(yearsSelected) {
             const currentTimestamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
             let chartLabels = [];
